@@ -6,5 +6,5 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final vm = KanbanViewModel();
   await vm.load();
-  runApp(MaterialApp(home: KanbanView(vm)));
+  runApp(MaterialApp(title: appTitle, home: KanbanView(vm)));
 }

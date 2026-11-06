@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'model.dart';
 import 'view_model.dart';
 
-final names = ['📝 未着手 (To Do)', '🔨 作業中 (Doing)', '✅ 完了 (Done)'];
-final labels = ['未着手', '作業中', '完了'];
-final colors = [Colors.blue.shade50, Colors.orange.shade50, Colors.green.shade50];
+const appTitle = 'clasroom ToDo';
+
+final names = ['📝 未着手 (To Do)', '🔨 作業中 (Doing)', '✅ 完了 (Done)', '☠️諦めた'];
+final labels = ['未着手', '作業中', '完了', '諦めた'];
+final colors = [Colors.blue.shade50, Colors.orange.shade50, Colors.green.shade50, Colors.grey.shade50];
 
 class KanbanView extends StatefulWidget {
   final KanbanViewModel vm;
@@ -133,12 +135,12 @@ class _KanbanViewState extends State<KanbanView> {
       listenable: widget.vm,
       builder: (context, child) => ListView(
         scrollDirection: Axis.horizontal,
-        children: [for (int s = 0; s < 3; s++) lane(s)],
+        children: [for (int s = 0; s < 4; s++) lane(s)],
       ),
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('📋 Kanban')),
+      appBar: AppBar(title: const Text(appTitle)),
       body: Column(children: [
         entry,
         Expanded(child: board),
