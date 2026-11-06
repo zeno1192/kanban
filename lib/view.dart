@@ -4,13 +4,16 @@ import 'view_model.dart';
 
 const appTitle = 'clasroom ToDo';
 
-final names = ['📝 未着手 (To Do)', '🔨 作業中 (Doing)', '✅ 完了 (Done)', '☠️諦めた'];
-final labels = ['未着手', '作業中', '完了', '諦めた'];
-final colors = [Colors.blue.shade50, Colors.orange.shade50, Colors.green.shade50, Colors.grey.shade50];
+final _lanes = <({String title, String label, Color color})>[
+  (title: '📝 未着手 (To Do)', label: '未着手', color: Colors.blue.shade50),
+  (title: '🔨 作業中 (Doing)', label: '作業中', color: Colors.orange.shade50),
+  (title: '✅ 完了 (Done)', label: '完了', color: Colors.green.shade50),
+  (title: '☠️諦めた', label: '諦めた', color: Colors.grey.shade50),
+];
 
 class KanbanView extends StatefulWidget {
   final KanbanViewModel vm;
-  KanbanView(this.vm, {super.key});
+  const KanbanView(this.vm, {super.key});
 
   @override
   State<KanbanView> createState() => _KanbanViewState();
@@ -18,6 +21,7 @@ class KanbanView extends StatefulWidget {
 
 class _KanbanViewState extends State<KanbanView> {
   final input = TextEditingController();
+  final boardScrollController = ScrollController();
 
   void add() {
     widget.vm.add(input.text);
@@ -56,12 +60,12 @@ class _KanbanViewState extends State<KanbanView> {
       if (s > 0)
         TextButton(
           onPressed: () => widget.vm.move(t, s - 1),
-          child: Text('← ${labels[s - 1]}へ'),
+          child: Text('← ${_lanes[s - 1].label}へ'),
         ),
-      if (s < 2)
+      if (s < _lanes.length - 1)
         FilledButton(
           onPressed: () => widget.vm.move(t, s + 1),
-          child: Text('${labels[s + 1]}へ →'),
+          child: Text('${_lanes[s + 1].label}へ →'),
         ),
     ]);
      return Card(child: ListTile(
@@ -88,10 +92,10 @@ class _KanbanViewState extends State<KanbanView> {
     return SizedBox(
       width: 300,
       child: Card(
-        color: colors[s],
+        color: _lanes[s].color,
         child: Column(children: [
           ListTile(
-            title: Text(names[s]),
+            title: Text(_lanes[s].title),
             trailing: Text('${cards.length}件'),
           ),
           Expanded(child: ListView(children: cards)),
@@ -103,6 +107,7 @@ class _KanbanViewState extends State<KanbanView> {
   @override
   void dispose() {
     input.dispose();
+    boardScrollController.dispose();
     super.dispose();
   }
 
@@ -131,11 +136,18 @@ class _KanbanViewState extends State<KanbanView> {
         Align(alignment: Alignment.centerRight, child: button),
       ]),
     ));
-    final board = ListenableBuilder(
-      listenable: widget.vm,
-      builder: (context, child) => ListView(
-        scrollDirection: Axis.horizontal,
-        children: [for (int s = 0; s < 4; s++) lane(s)],
+    final board = Scrollbar(
+      controller: boardScrollController,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: ListenableBuilder(
+        listenable: widget.vm,
+        builder: (context, child) => ListView.builder(
+          controller: boardScrollController,
+          scrollDirection: Axis.horizontal,
+          itemCount: _lanes.length,
+          itemBuilder: (context, status) => lane(status),
+        ),
       ),
     );
 
