@@ -67,6 +67,11 @@ class _KanbanViewState extends State<KanbanView> {
           onPressed: () => widget.vm.move(t, s + 1),
           child: Text('${_lanes[s + 1].label}へ →'),
         ),
+      if (s + 1 < Task.abandonedStatus)
+        TextButton(
+          onPressed: () => widget.vm.move(t, Task.abandonedStatus),
+          child: const Text('諦める'),
+        ),
     ]);
      return Card(child: ListTile(
       title: Text(t.title),
