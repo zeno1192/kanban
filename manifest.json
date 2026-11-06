@@ -1,6 +1,6 @@
 {
-    "name": "kanban",
-    "short_name": "kanban",
+    "name": "clasroom ToDo",
+    "short_name": "clasroom ToDo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
